@@ -1,11 +1,12 @@
+#ifndef HTTP_SERVER_H
+#define HTTP_SERVER_H
+
 #include "network.h"
 #include "http_parser.h"
 #include "http_builder.h"
 #include "data.h"
 #include <cstddef>
 #include <stdbool.h>
-
-static const int G_MAX_CLIENT_CONNECTIONS = 1;
 
 struct HttpServer {
     NetworkIO network_io_module;
@@ -44,3 +45,5 @@ inline void run(HttpServer* http_server) {
         // Process the message
     }
 }
+
+#endif
