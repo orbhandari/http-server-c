@@ -5,17 +5,17 @@
 #include "http_parser.h"
 #include "http_builder.h"
 #include "data.h"
-#include <cstddef>
+#include <stddef.h>
 #include <stdbool.h>
 
 struct HttpServer {
-    NetworkIO network_io_module;
-    HttpParser http_parser_module;
-    HttpBuilder http_builder_module;
-    DataIO data_io_module;
+    struct NetworkIO network_io_module;
+    struct HttpParser http_parser_module;
+    struct HttpBuilder http_builder_module;
+    struct DataIO data_io_module;
 };
 
-inline HttpServer* get_http_server(int port) {
+inline struct HttpServer* get_http_server(int port) {
     // malloc an http server.
     // construct and init modules
     // starts the http server 
@@ -38,7 +38,7 @@ inline bool process_message(char message[]) {
     return false;
 }
 
-inline void run(HttpServer* http_server) {
+inline void run(struct HttpServer* http_server) {
     while (true) {
         // Poll from the socket set of the network io module
         // Do a recv() from an available file descriptor

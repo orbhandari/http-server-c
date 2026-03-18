@@ -2,7 +2,7 @@
 #define NETWORK_IO_MODULE_H
 
 #include "http_parser.h"
-#include <cstring>
+#include <string.h>
 
 // Maybe put into parser module?
 static const int G_MAX_METHOD_LEN = 6; // GET, POST, PUT, DELETE
@@ -18,7 +18,7 @@ static const int G_MAX_BUFFER_SIZE =
 
 struct Connection {
   char buffer[G_MAX_BUFFER_SIZE];
-  char offset = 0; // This offset (suggested by Gemini) is used to avoid wasted
+  char offset; // This offset (suggested by Gemini) is used to avoid wasted
                    // linear scans to find the first available CLRF.
 };
 
@@ -27,8 +27,9 @@ struct NetworkIO {
                    // one listening socket.
                    // num_sockets should be at most G_MAX_SOCKETS.
                    // This invariant should be programmed in setters/getters.
-  Connection connections[G_MAX_SOCKETS];
+  struct Connection connections[G_MAX_SOCKETS];
 };
+
 
 // TODO: Add connection, remove connection.
 // Interesting fact about remove connection: normally, after a HTTP response,

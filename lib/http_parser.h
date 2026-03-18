@@ -2,8 +2,8 @@
 #define HTTP_PARSER_H
 
 #include <assert.h>
-#include <cstdio>
-#include <cstring>
+#include <stdio.h>
+#include <string.h>
 #include <stdbool.h>
 
 static const char SP = ' ';
@@ -11,17 +11,21 @@ static const char SP = ' ';
 static const int G_REQUEST_LINE_NUM_TOKENS = 2; // Defined by HTTP/0.9 RFC.
 static const int G_MAX_URI_LEN =
     1024; // Max URI length is not specified in RFC, so it seems we have freedom
-          // to choose it.
-          // TODO: Choose a common length, and consider any possible tradeoffs.
+          // to choose it. Common maximum is 2000-2048 bytes, however in our toy
+          // project, we go lower.
 
 enum HttpParseState { PARSING_GET, PARSING_REQUEST_URI, PARSING_FINISHED };
 
-// HttpParser is modelled as a finite state machine.
+/*
+ * @brief HttpParser is modelled as a finite state machine.
+ */
 struct HttpParser {
-  HttpParseState state; // Unitialized "initial" state.
+  enum HttpParseState state; // Unitialized "initial" state.
 };
 
-// Simple-Request  = "GET" SP Request-URI CRLF
+/*
+ * @brief Simple-Request  = "GET" SP Request-URI CRLF
+ */
 struct HttpSimpleRequest {
   char request_uri[G_MAX_URI_LEN +
                    1]; // request_uri is a null-terminated string, hence the +1.
@@ -42,7 +46,7 @@ struct HttpSimpleRequest {
  * http_simple_request may still contain partial values, and should not be used
  * as not all values are initialised. Doing so leads to undefined behaviour.
  */
-inline bool parse_simple_request(HttpParser *http_parser,
+inline bool parse_simple_request(struct HttpParser *http_parser,
                                  struct HttpSimpleRequest *http_simple_request,
                                  char request[]) {
   char *token;
@@ -50,7 +54,7 @@ inline bool parse_simple_request(HttpParser *http_parser,
   char delimiters[] = {SP};
   token = strtok(request, delimiters);
 
-  http_parser->state = HttpParseState::PARSING_GET;
+  http_parser->state = PARSING_GET;
 
   // Technically, we can increment the enum by +1 so that we avoid making
   // mistakes of setting the wrong next state.

@@ -1,3 +1,5 @@
+#include <stdbool.h>
+
 // Blocking, non-asynchronous for now.
 struct DataIO {};
 
