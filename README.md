@@ -28,7 +28,15 @@ Things I want to cover:
 - How the two issues of array shifting problem and failed `check_if_complete` calls are alleviated.
 - How the DataIO is still blocking and how I plan to improve that.
 - The idea of a (finite) state machine and how it's implemented in the `HTTPParser` module.
+- `epoll` issues with edge-triggered interfaces, and what design tradeoff it involves.
 
 ## Future plan
 *wip*
 - Async engine for the `DataIO` module.
+
+## Learning notes
+- Why use preprocessor macros instead of `const`?
+- `select` vs `poll` vs `epoll`?
+- `strncmp` vs `strcmp`
+- Why always pass in pointers of caller-created objects into functions? 
+- 

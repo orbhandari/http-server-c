@@ -1,8 +1,8 @@
 #include "../lib/http_parser.h"
+#include "testing_utils.h"
 #include <stddef.h>
 #include <string.h>
 
-void print_test_passed() { printf("\n---------- TEST PASSED ----------\n"); }
 
 void test_parse_simple_request_with_valid_get_and_uri() {
   printf("Running test_parse_simple_request_with_valid.\n");

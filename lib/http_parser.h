@@ -62,6 +62,7 @@ bool parse_simple_request(struct HttpParser *http_parser,
   // Technically, we can increment the enum by +1 so that we avoid making
   // mistakes of setting the wrong next state.
   while (token != NULL) {
+    // Currently fails the parsing if there are extra tokens.
     if (http_parser->state >= PARSING_FINISHED) {
       return false;
     }
@@ -77,7 +78,8 @@ bool parse_simple_request(struct HttpParser *http_parser,
       break;
     case PARSING_REQUEST_URI:
       if (strlen(token) > G_MAX_URI_LEN) {
-        printf("[Error] URI exceeded G_MAX_URI_LEN: %d. Current URI length: %d", G_MAX_URI_LEN, strlen(token));
+        printf("[Error] URI exceeded G_MAX_URI_LEN: %d. Current URI length: %lu",
+               G_MAX_URI_LEN, strlen(token));
         return false;
       }
       strcpy(http_simple_request->request_uri, token);
