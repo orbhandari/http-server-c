@@ -81,12 +81,14 @@ bool parse_simple_request(struct HttpParser *http_parser,
       http_parser->state = PARSING_REQUEST_URI;
       break;
     case PARSING_REQUEST_URI:
+      // TODO: Should validate request uri further here, such as needing it to start with /
       if (token_len > G_MAX_URI_LEN) {
         printf(
             "[Error] URI exceeded G_MAX_URI_LEN: %d. Current URI length: %lu",
             G_MAX_URI_LEN, token_len);
         return false;
       } else if (token_len <= 0) {
+        // TODO: Also, if it is empty, technically we should default to root / as well
         printf("[Error] URI does not have positive length. Current URI length: "
                "%lu",
                token_len);

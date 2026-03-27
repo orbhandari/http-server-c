@@ -1,5 +1,4 @@
 #include "../lib/http_server.h"
-#include "testing_utils.h"
 
 #define TEST_PORT 60001
 

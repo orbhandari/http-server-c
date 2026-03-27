@@ -15,6 +15,7 @@
 #define G_SP_LEN 1
 
 #define G_BUFFER_SCALING_FACTOR 2
+// This is the maximum size of the per-client application buffer.
 #define G_MAX_BUFFER_SIZE                                                      \
   ((G_MAX_METHOD_LEN + G_SP_LEN + G_MAX_URI_LEN) * G_BUFFER_SCALING_FACTOR)
 
