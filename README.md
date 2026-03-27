@@ -3,6 +3,7 @@ Mostly from scratch (i.e. no external libraries apart from that available in sta
 
 ## Example usage
 **DISCLAIMER**: THIS IS NOT YET READY TO USE. A LOT OF THINGS ARE STILL HARDCODED, SUCH AS ONLY ALLOWING `hello.txt` FROM `allowed_files` DIRECTORY.
+
 This library is header-only, so once you copy the entire `lib` directory into your project root, you should be good to go. Feel free to compile then link as a shared object or static library so that your repo is less cluttered.
 
 ```c
