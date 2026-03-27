@@ -45,6 +45,8 @@ struct HttpServer {
  */
 struct HttpServer *get_http_server(int port) {
   struct HttpServer *http_server;
+  // TODO: Perhaps allow the caller to set the memory, and we only initialize it (similar the init_module calls we have here)
+  // Apparently, this allows the caller to put it in BSS segment as a global static variable, avoiding our explicit malloc
   http_server = malloc(sizeof(*http_server));
 
   // Init does NOT mean it starts listening. The HTTP server is STILL in a idle
