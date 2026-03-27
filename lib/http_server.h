@@ -49,6 +49,8 @@ struct HttpServer *get_http_server(int port) {
   // state.
   init_network_io(&http_server->network_io_module, port);
 
+  init_http_parser(&http_server->http_parser_module);
+
   // TODO more inits here...
 
   return http_server;
@@ -96,13 +98,18 @@ void process_connection_buffer(struct HttpServer *http_server,
 
         // Check if we can correctly shift from the part after '\r\n'
         // next_message_start_idx is same as the request_buffer plus two bytes
-        // for CLRF
+        // for CLRF.
         const int next_message_start_idx = request_len + 2;
 
         if (next_message_start_idx <= G_MAX_BUFFER_SIZE - 1) {
+          // This is a faster way to "circular shift" our array/pop the first
+          // message out.
           memmove(&connection->buffer[0],
                   &connection->buffer[next_message_start_idx],
                   connection->buffer_size - next_message_start_idx + 1);
+
+          // Make sure the invalid data is truly "unmeaningful" by resetting
+          // them to 0.
           memset(&connection->buffer[next_message_start_idx], 0,
                  connection->buffer_size - next_message_start_idx + 1);
 

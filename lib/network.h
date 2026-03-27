@@ -8,6 +8,7 @@
 #include <netinet/in.h>
 #include <netinet/ip.h>
 #include <stdbool.h>
+#include <string.h>
 #include <stdlib.h>
 
 /*
@@ -35,12 +36,38 @@ struct NetworkIO {
 };
 
 /*
- * @brief Initialises a NetworkIO module.
+ * @brief Initialises a NetworkIO module, and crashes if any step of the server
+ * socket setup fails.
  *
  * @param network_io_module Pointer to caller-created NetworkIO object.
  * @param port A free port in the range: [49152-65535].
  */
 void init_network_io(struct NetworkIO *network_io_module, int port) {
+  // 0-initialise for safety.
+  memset(network_io_module, 0, sizeof(struct NetworkIO));
+
+  // This is a TCP server socket:
+  // https://man7.org/linux/man-pages/man7/ip.7.html
+  network_io_module->listen_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+
+  if (network_io_module->listen_socket == -1) {
+    err(EXIT_FAILURE, "getting a listen_socket failed");
+  }
+  printf("Created listen socket.\n");
+
+  if (set_non_blocking(network_io_module->listen_socket) == -1) {
+    err(EXIT_FAILURE, "setting listen_socket to non-blocking failed");
+  }
+  printf("Set listen socket to non blocking.\n");
+
+  int opt = 1;
+  if (setsockopt(network_io_module->listen_socket, SOL_SOCKET,
+                 SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt)) == -1) {
+    perror("setsockopt failed for listen_socket");
+    exit(EXIT_FAILURE);
+  }
+  printf("Set socket options to re-use address and re-use port.\n");
+
   network_io_module->num_sockets = G_NUM_LISTENING_SOCKETS;
 
   assert(port >= 49152 && port <= 65535 &&
@@ -49,36 +76,13 @@ void init_network_io(struct NetworkIO *network_io_module, int port) {
 }
 
 /*
- * @brief Crashes if any step of the server socket setup fails. Please ensure
- * the NetworkIO object is properly initialised via init_network_io.
+ * @brief Please ensure the NetworkIO object is properly initialised via
+ * init_network_io.
  *
  * @param network_io_module Pointer to caller-created NetworkIO object.
  */
 void start_listening(struct NetworkIO *network_io_module) {
-  // This is a TCP socket: https://man7.org/linux/man-pages/man7/ip.7.html
-  int listen_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-  network_io_module->listen_socket = listen_socket;
-
-  if (listen_socket == -1) {
-    err(EXIT_FAILURE, "getting a listen_socket failed");
-  }
-  printf("Created listen socket.\n");
-
-  if (set_non_blocking(listen_socket) == -1) {
-    err(EXIT_FAILURE, "setting listen_socket to non-blocking failed");
-  }
-  printf("Set listen socket to non blocking.\n");
-
-  int opt = 1;
-  if (setsockopt(listen_socket, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt,
-                 sizeof(opt)) == -1) {
-    perror("setsockopt failed for listen_socket");
-    exit(EXIT_FAILURE);
-  }
-  printf("Set socket options to re-use address and re-use port.\n");
-
-  assert(network_io_module->port >= 49152 && network_io_module->port <= 65535 &&
-         "please use a port in the range [49152-65535].");
+  int listen_socket = network_io_module->listen_socket;
 
   // Using designated initializers will automatically zero out paddings, so we
   // don't need to memset to 0.

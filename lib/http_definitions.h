@@ -9,6 +9,6 @@
 #define SP ' '
 
 // Defined by HTTP/0.9 RFC.
-#define G_REQUEST_LINE_NUM_TOKENS  2
+#define G_REQUEST_LINE_NUM_TOKENS 2
 
 #endif

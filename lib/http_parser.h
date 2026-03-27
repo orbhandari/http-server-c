@@ -7,7 +7,12 @@
 #include <stdio.h>
 #include <string.h>
 
-enum HttpParseState { PARSING_GET, PARSING_REQUEST_URI, PARSING_FINISHED };
+enum HttpParseState {
+  START,
+  PARSING_GET,
+  PARSING_REQUEST_URI,
+  PARSING_FINISHED
+};
 
 /*
  * @brief HttpParser is modelled as a finite state machine.
@@ -25,6 +30,13 @@ struct HttpSimpleRequest {
                        // TODO: Change to pointer and heap-allocated C-string.
                        // This is memory-wasteful.
 };
+
+/*
+ * @brief Initialises a HttpParser module.
+ */
+void init_http_parser(struct HttpParser *http_parser) {
+  http_parser->state = START;
+}
 
 /*
  * @param http_parser Pointer to a HttpParser instance. The function will modify
