@@ -1,20 +1,12 @@
 #ifndef HTTP_PARSER_H
 #define HTTP_PARSER_H
 
+#include "http_definitions.h"
 #include <assert.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
 
-// Max URI length is not specified in RFC, so it seems we have freedom
-// to choose it. Common maximum is 2000-2048 bytes, however in our toy
-// project, we go lower.
-#define G_MAX_URI_LEN 1024
-
-const char SP = ' ';
-
-// Defined by HTTP/0.9 RFC.
-const int G_REQUEST_LINE_NUM_TOKENS = 2;
 
 enum HttpParseState { PARSING_GET, PARSING_REQUEST_URI, PARSING_FINISHED };
 
